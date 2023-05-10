@@ -1,12 +1,9 @@
-const fs = require('fs');
+import fs from "fs"
 
-class ProductManager {
+export default class ProductManager {
     constructor(path){
         this.path = (path);
-        this.products = [];
-        let data = fs.readFileSync(this.path, "utf-8");
-        let dataParse = JSON.parse(data);
-        this.products = dataParse;
+        this.products = JSON.parse(fs.readFileSync(this.path, "utf-8")) || [];
     }
 
     getProducts() {
@@ -74,43 +71,40 @@ class ProductManager {
 
 }
 
+// const item = new ProductManager("products.json");
 
-const item = new ProductManager("test.json");
+// // Llama al getProduct.
+// console.log(item.getProducts());
 
+// // Agrega el producto.
+// item.addProducts({
+//     title: "Test product",
+//     description: "This is a test product",
+//     price: 200,
+//     thumbnail: "Without image",
+//     code: "abc123",
+//     stock: 25,
+// })
+// console.log(item.getProducts());
 
-// Llama al getProduct.
-console.log(item.getProducts());
+// // Llama a un producto por un ID existente.
+// console.log(item.getProductsById(1));
+// // Llama a un producto por un ID inexistente.
+// console.log(item.getProductsById(5));
 
-// Agrega el producto.
-item.addProducts({
-    title: "Test product",
-    description: "This is a test product",
-    price: 200,
-    thumbnail: "Without image",
-    code: "abc123",
-    stock: 25,
-})
-console.log(item.getProducts());
+// // Actualiza un producto.
+// const updatedProduct = {
+//     id: 1,
+//     title: "New title",
+//     description: "New description",
+//     price: 4000,
+//     thumbnail: "New image",
+//     code: "abc1234",
+//     stock: 6,
+// }
+// item.updateProduct(1, updatedProduct);
+// console.log(item.getProducts());
 
-// Llama a un producto por un ID existente.
-console.log(item.getProductsById(1));
-// Llama a un producto por un ID inexistente.
-console.log(item.getProductsById(5));
-
-// Actualiza un producto.
-const updatedProduct = {
-    id: 1,
-    title: "New title",
-    description: "New description",
-    price: 4000,
-    thumbnail: "New image",
-    code: "abc1234",
-    stock: 6,
-}
-item.updateProduct(1, updatedProduct);
-console.log(item.getProducts());
-
-// Elimina un producto.
-item.deleteProduct(1);
-console.log(item.getProducts());
-
+// // Elimina un producto.
+// item.deleteProduct(1);
+// console.log(item.getProducts());
