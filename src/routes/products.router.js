@@ -1,22 +1,11 @@
 import express from "express"
-import ProductManager from "./productManager.js";
+import ProductManager from "../functions/productManager.js";
+
+export const productsRouter = express.Router();
 
 const productManager = new ProductManager("products.json");
-const app = express()
-const PORT = 8080
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`)
-})
-
-app.get("/", (req, res) => {
-  res.send('Comision 51395 -- Desafio n°3 || Solano Jonathan Ariel')
-  });
-
-app.get("/products", async(req, res) => {
+productsRouter.get("/", async(req, res) => {
   let products = await productManager.getProducts()
   let {limit} = req.query
   limit = parseInt(limit)
@@ -37,7 +26,7 @@ app.get("/products", async(req, res) => {
   }
 })
 
-app.get("/products/:pid", async (req, res) => {
+productsRouter.get("/:pid", async (req, res) => {
   const id = req.params.pid;
   let product = await productManager.getProductsById(parseInt(id))
   res.status(200).json({
@@ -47,7 +36,7 @@ app.get("/products/:pid", async (req, res) => {
   })
 })
 
-app.post("/products", (req, res) => {
+productsRouter.post("/", (req, res) => {
   const prod = req.body;
   productManager.addProducts(prod);
   res.status(200).json({
@@ -57,7 +46,7 @@ app.post("/products", (req, res) => {
   })
 });
 
-app.put("/products/:pid", (req, res) => {
+productsRouter.put("/:pid", (req, res) => {
   let id = req.params.pid;
   const updatedProduct = req.body;
   productManager.updateProduct(parseInt(id), updatedProduct);
@@ -68,7 +57,7 @@ app.put("/products/:pid", (req, res) => {
     });
 });
 
-app.delete("/products/:pid", (req, res) => {
+productsRouter.delete("/:pid", (req, res) => {
   try {
     let id = req.params.pid;
     productManager.deleteProduct(parseInt(id));
@@ -86,12 +75,3 @@ app.delete("/products/:pid", (req, res) => {
   }
 });
 
-
-app.get("*", (req, res) => {
-  return res.status(404).json({
-    status: "error",
-    msg: "No se encuentra esa ruta",
-    data: {}
-  });
-});
-   

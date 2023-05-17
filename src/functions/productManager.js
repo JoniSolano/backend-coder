@@ -39,6 +39,7 @@ export default class ProductManager {
     updateProduct (id, updatedProduct) {
         
         const prodIndex = this.products.findIndex((product) => product.id === id);
+        
         if (prodIndex === -1) {
             console.log(`Producto no encontrado`)
             return;
@@ -78,6 +79,7 @@ export default class ProductManager {
     }
 
 }
+
 
 // const item = new ProductManager("products.json");
 
