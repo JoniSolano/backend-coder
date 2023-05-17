@@ -39,10 +39,18 @@ export default class ProductManager {
     updateProduct (id, updatedProduct) {
         
         const prodIndex = this.products.findIndex((product) => product.id === id);
-        this.products[prodIndex] = updatedProduct;
+        if (prodIndex === -1) {
+            console.log(`Producto no encontrado`)
+            return;
+        }
+
+        this.products[prodIndex] = {
+            ...updatedProduct,
+            id,
+        };
         let productsString = JSON.stringify(this.products);
         fs.writeFileSync(this.path, productsString, 'utf-8');
-        console.log(this.products)
+        console.log(`Producto ${id} modificado`)
     }
 
     deleteProduct (id) {
