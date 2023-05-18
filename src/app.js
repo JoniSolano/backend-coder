@@ -8,6 +8,8 @@ const PORT = 8080
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/static", express.static("public"));
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port http://localhost:${PORT}`)

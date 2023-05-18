@@ -10,6 +10,17 @@ export default class ProductManager {
         return this.products;
     }
 
+    getProductsById(id){
+        const product = this.products.find(product => product.id === id);
+
+        if (!product) {
+            console.log(`The "id: ${id}" does not exist`);
+            return;
+        }else {
+            return product;
+        }
+    }
+
     addProducts (product) {
 
         const existingProduct = this.products.some((prod) => prod.code === product.code);
@@ -66,18 +77,6 @@ export default class ProductManager {
             console.log('Removed product');
         }
     }
-
-    getProductsById(id){
-        const product = this.products.find(product => product.id === id);
-
-        if (!product) {
-            console.log(`The "id: ${id}" does not exist`);
-            return;
-        }else {
-            return product;
-        }
-    }
-
 }
 
 

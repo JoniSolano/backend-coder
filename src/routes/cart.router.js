@@ -1,77 +1,44 @@
 import express from "express"
-// import ProductManager from "../functions/productManager.js";
+import CartManager from "../functions/cartManager.js";
 
 export const cartRouter = express.Router();
 
-// const productManager = new ProductManager("products.json");
+const cartManager = new CartManager("cart.json");
 
-cartRouter.get("/", async(req, res) => {
-  let products = await productManager.getProducts()
-  let {limit} = req.query
-  limit = parseInt(limit)
+cartRouter.get("/", (req, res) => {
+  const carts = cartManager.getCart();
+  res.status(200).json(carts)
+});
 
-  if (limit) {
-    const limitedProd = products.slice(0, limit)
-    res.status(200).json({
-      status: "success",
-      msg: `Mostrando los ${limit} productos`,
-      data: limitedProd,
-  })
-  }else {
-    res.status(200).json({
-      status: "success",
-      msg: `Mostrando los ${products.length} productos`,
-      data: products,
-    })
+cartRouter.get("/cid", (req, res) => {
+  const cartId = req.params.cid
+  const cart = cartManager.getCartById(parseInt(cartId));
+  
+  if(cart) {
+    res.status(200).json(cart.products);
+  } else {
+    res.status(400).json({status: "error", msg: `Carrito ${cartId} no encontrado`})
   }
-})
-
-cartRouter.get("/:pid", async (req, res) => {
-  const id = req.params.pid;
-  let product = await productManager.getProductsById(parseInt(id))
-  res.status(200).json({
-    status: "success",
-    msg: `Mostrando el producto con ID ${product.id}`,
-    data: product,
-  })
 })
 
 cartRouter.post("/", (req, res) => {
-  const prod = req.body;
-  productManager.addProducts(prod);
-  res.status(200).json({
-    status: "success",
-    msg: `producto creado`,
-    data: prod
-  })
-});
+  newCart = cartManager.createCart();
+  res.status(200).json(newCart);
+})
 
-cartRouter.put("/:pid", (req, res) => {
-  let id = req.params.pid;
-  const updatedProduct = req.body;
-  productManager.updateProduct(parseInt(id), updatedProduct);
-  res.status(200).json({
-    status: "success",
-    msg: "Producto modificado.",
-    data: updatedProduct,
-    });
-});
+cartRouter.post("/:cid/product/:pid", (req, res) => {
+  const cartId = parseInt(req.params.cid);
+  const productId = parseInt(req.params.pid);
 
-cartRouter.delete("/:pid", (req, res) => {
-  try {
-    let id = req.params.pid;
-    productManager.deleteProduct(parseInt(id));
-    res.status(200).json({
-      status: "success",
-      msg: "Producto eliminado.",
-      data: {},
-      });
-  } catch (err) {
-    res.status(400).json({
-      status: "ERROR",
-      msg: "Error en el servidor",
-      data: {},
-    });
+  const cart = cartManager.getCartById(cartId);
+  if (!cart) {
+    res.status(404).json({status: "error", msg: `Carrito ${cartId} no econtrado`})
   }
-});
 
+  const product = cartManager.getProductById(productId);
+  if (!product) {
+    res.status(404).json({msg: `Producto ${productId} no encontrado`})
+  }
+  cartManager.addProductToCart(cartId, productId);
+  res.json({msg: `Producto ${productId} agregado al carrito ${cartId}`})
+})
