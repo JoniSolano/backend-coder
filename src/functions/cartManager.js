@@ -1,5 +1,7 @@
 import fs from "fs"
-import ProductManager from "../functions/productManager.js";
+import ProductManager from "./productManager.js";
+
+const productManager = new ProductManager("products.json");
 
 export default class  CartManager {
     constructor(path){
@@ -11,7 +13,7 @@ export default class  CartManager {
         const newCart = {id: this.carts.length + 1, products: []};
         
         this.carts.push(newCart);
-        fs.writeFileSync(this.path, JSON.stringify(this.products), 'utf-8');
+        fs.writeFileSync(this.path, JSON.stringify(this.carts), 'utf-8');
         return newCart;
     }
 
@@ -20,7 +22,8 @@ export default class  CartManager {
     }
 
     getCartById(id) {
-        let cartFound = this.carts.find((prod) => prod.id === id);
+        const cartFound = this.carts.find(product => product.id === id);
+
         if (!cartFound) {
             console.log(`Not found`);
             return;
@@ -43,18 +46,18 @@ export default class  CartManager {
             }
 
             cart.products.push({
-                id: product.id,
+                id: productId,
                 quantity: 1,
             });
         }
 
-        fs.writeFileSync(this.path, JSON.stringify(this.products), 'utf-8');        
+        fs.writeFileSync(this.path, JSON.stringify(this.carts), 'utf-8');
+        console.log("Producto agregado al carrito correctamente")      
     }
 
-    getProductById(id) {
-        const product = productManager.getProductById(id);
+    async getProductById(id) {
+        const product = await productManager.getProductById(id);
         console.log(product)
         return product;
       }
-
 }

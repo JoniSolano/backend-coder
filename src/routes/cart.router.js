@@ -1,5 +1,8 @@
 import express from "express"
 import CartManager from "../functions/cartManager.js";
+import ProductManager from "../functions/productManager.js";
+
+const productManager = new ProductManager("products.json");
 
 export const cartRouter = express.Router();
 
@@ -10,23 +13,31 @@ cartRouter.get("/", (req, res) => {
   res.status(200).json(carts)
 });
 
-cartRouter.get("/cid", (req, res) => {
+cartRouter.post("/", (req, res) => {
+  const newCart = cartManager.createCart();
+  res.status(200).json({
+    status: "success",
+    msg: `Carrito creado`,
+    data: newCart
+  });
+})
+
+cartRouter.get("/:cid", (req, res) => {
   const cartId = req.params.cid
-  const cart = cartManager.getCartById(parseInt(cartId));
+  const cartEcontrado = cartManager.getCartById(parseInt(cartId));
   
-  if(cart) {
-    res.status(200).json(cart.products);
+  if(cartEcontrado) {
+    res.status(200).json({
+      status: "success",
+      msg: `Productos del carrito ${cartId}`,
+      data: cartEcontrado
+    });
   } else {
     res.status(400).json({status: "error", msg: `Carrito ${cartId} no encontrado`})
   }
 })
 
-cartRouter.post("/", (req, res) => {
-  newCart = cartManager.createCart();
-  res.status(200).json(newCart);
-})
-
-cartRouter.post("/:cid/product/:pid", (req, res) => {
+cartRouter.post("/:cid/products/:pid", (req, res) => {
   const cartId = parseInt(req.params.cid);
   const productId = parseInt(req.params.pid);
 
@@ -40,5 +51,9 @@ cartRouter.post("/:cid/product/:pid", (req, res) => {
     res.status(404).json({msg: `Producto ${productId} no encontrado`})
   }
   cartManager.addProductToCart(cartId, productId);
-  res.json({msg: `Producto ${productId} agregado al carrito ${cartId}`})
+  res.json({
+    status: "success",
+    msg: `Producto ${productId} agregado al carrito ${cartId}`,
+    data: cart
+  })
 })
