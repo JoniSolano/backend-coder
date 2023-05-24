@@ -1,6 +1,11 @@
-import express from "express"
-import { productsRouter } from "./routes/products.router.js";
+import express from "express";
+import handlebars from "express-handlebars";
+import { Server } from 'socket.io';
 import { cartRouter } from "./routes/cart.router.js";
+import { productsRouter } from "./routes/products.router.js";
+import { homeRouter } from "./routes/home.router.js";
+import { realTimeProductsRouter } from "./routes/realtimeproducts.router.js";
+import { __dirname } from "./utils.js";
 
 
 const app = express()
@@ -8,15 +13,31 @@ const PORT = 8080
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/static", express.static("public"));
+app.use(express.static("public"));
 
+app.engine("handlebars", handlebars.engine());
+app.set("views", __dirname + "/views");
+app.set("view engine", "handlebars");
 
-app.listen(PORT, () => {
+const httpServer = app.listen(PORT, () => {
   console.log(`Example app listening on port http://localhost:${PORT}`)
 })
 
-app.use("/products", productsRouter);
-app.use("/cart", cartRouter);
+const socketServer = new Server(httpServer)
+;
+socketServer.on('connection',(socket)=>{
+  socket.on('msg_front_back',(allProd)=>{
+      socketServer.emit('msg_back_front', allProd)
+  })
+  
+})
+
+app.use("/api/products", productsRouter);
+app.use("/api/cart", cartRouter);
+
+
+app.use("/home",homeRouter)
+app.use("/realtimeproducts",realTimeProductsRouter)
 
 
 app.get("/", (req, res) => {
