@@ -39,7 +39,8 @@ export default class ProductManager {
             console.log('This product already exists');
             return;
         } else {
-            this.products.push({...product, id: this.products.length +1})
+            let newProduct = {...product, id: this.products.length +1}
+            this.products.push(newProduct)
             let productsString = JSON.stringify(this.products)
             fs.writeFileSync(this.path, productsString, 'utf-8');
             console.log("Added product");

@@ -2,10 +2,13 @@ import express from "express";
 import handlebars from "express-handlebars";
 import { Server } from 'socket.io';
 import { cartRouter } from "./routes/cart.router.js";
-import { productsRouter } from "./routes/products.router.js";
 import { homeRouter } from "./routes/home.router.js";
+import { productsRouter } from "./routes/products.router.js";
 import { realTimeProductsRouter } from "./routes/realtimeproducts.router.js";
 import { __dirname } from "./utils.js";
+import ProductManager from "./functions/productManager.js";
+const productManager = new ProductManager("products.json");
+
 
 
 const app = express()
@@ -25,12 +28,36 @@ const httpServer = app.listen(PORT, () => {
 
 const socketServer = new Server(httpServer)
 ;
-socketServer.on('connection',(socket)=>{
-  socket.on('msg_front_back',(allProd)=>{
-      socketServer.emit('msg_back_front', allProd)
-  })
+socketServer.on("connection", (socket) => {
+  console.log(`New client: ${socket.id}`);
+
+  socket.on("new-product", async (newProd) => {
+    try {
+      await productManager.addProducts({ ...newProd });
+
+      // Actualizar lista después de agregar producto
+      const productsList = await productManager.getProducts();
+      console.log(productsList);
+
+      socketServer.emit("products", productsList);
+    } catch (err) {
+      console.log(err);
+    }
+  }); 
+});
+
+// socket.on("delete-product", async (productId) => {
+  //   try {
+  //     await data.deleteProduct(productId);
   
-})
+  //     // Actualizar lista después de eliminar producto
+  //     const productsList = await data.getProducts();
+  //     console.log(productsList);
+  //     socketServer.emit("products", productsList);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // });
 
 app.use("/api/products", productsRouter);
 app.use("/api/cart", cartRouter);
