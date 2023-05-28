@@ -12,7 +12,7 @@ const urlInput = document.getElementById("urlform");
 
 
 const deleteProductForm = document.getElementById("deleteProductForm");
-const id = document.getElementById("productId");
+const productId = document.getElementById("productId");
 
 socket.on("products", (productsList) => {
   const productListContainer = document.getElementById("dinamic-list");
@@ -22,7 +22,7 @@ socket.on("products", (productsList) => {
     const productHTML = `
     <div>
       <div">
-        <img src=${product.thumbnail} alt=""/>
+        <img style="width: 50px; max-height: 50px" src=${product.thumbnail} alt=""/>
         <div>
           <h2>${product.title}</h2>
           <p>${product.description}</p>
