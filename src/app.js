@@ -43,21 +43,20 @@ socketServer.on("connection", (socket) => {
     } catch (err) {
       console.log(err);
     }
-  }); 
-});
-
-// socket.on("delete-product", async (productId) => {
-  //   try {
-  //     await data.deleteProduct(productId);
+  });
   
-  //     // Actualizar lista después de eliminar producto
-  //     const productsList = await data.getProducts();
-  //     console.log(productsList);
-  //     socketServer.emit("products", productsList);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // });
+  socket.on("delete-product", async (productId) => {
+    try {
+      await productManager.deleteProduct(productId);
+  
+      const productsList = await productManager.getProducts();
+      console.log(productsList);
+      socketServer.emit("products", productsList);
+    } catch (err) {
+      console.log(err);
+    }
+  });
+});
 
 app.use("/api/products", productsRouter);
 app.use("/api/cart", cartRouter);
