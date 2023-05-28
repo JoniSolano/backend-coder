@@ -1,4 +1,9 @@
-*{
+/* *{
     font-size: 1rem;
     color: blue;
+} */
+
+.product-details {
+    display: flex;
+    flex-direction: row;
 }

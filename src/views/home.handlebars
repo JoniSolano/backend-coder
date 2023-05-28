@@ -1,19 +1,21 @@
 <div>
   {{#each products}}
-    <div>
-      <div>
-        <img style="width: 50px; max-height: 50px" src={{thumbnail}}/>
-        <div >
-          <h2>{{title}}</h2>
-          <p>{{description}}</p>
-          <p>ID: {{id}}</p>
-          <p>Código: {{code}}</p>
-          <p>Categoría: {{category}}</p>
-          <p>Stock: {{stock}}</p>
-          <p>Precio: USD ${{price}}</p>
-          <p>Status: {{status}}</p>
+      <div >
+        <h2>{{title}}</h2>
+        <div class="product-details">
+          <div>
+            <img style="width: 100px; max-height: 100px" src={{thumbnail}}/>
+          </div>
+          <div>
+            <p>{{description}}</p>
+            <p>ID: {{id}}</p>
+            <p>Código: {{code}}</p>
+            <p>Categoría: {{category}}</p>
+            <p>Stock: {{stock}}</p>
+            <p>Precio: USD ${{price}}</p>
+            <p>Status: {{status}}</p>
+          </div>
         </div>
       </div>
-    </div>
   {{/each}}
 </div>
